@@ -1,0 +1,9 @@
+#pragma once
+#ifndef GU_WINDOWS_MSVC
+#define GET_SHADER_PATH(x) (std::string("${CMAKE_BINARY_DIR}/Engine/resources/shaders/") + std::string(x)).c_str()
+#define GET_RESOURCE_PATH(x) (std::string("${CMAKE_BINARY_DIR}/Engine/resources/") + std::string(x)).c_str()
+
+#else
+#define GET_SHADER_PATH(x) (std::string("./resources/shaders/") + std::string(x)).c_str()
+#define GET_RESOURCE_PATH(x) (std::string("./resources/") + std::string(x)).c_str()
+#endif
