@@ -1,0 +1,4 @@
+[Bb]uild/
+.DS_Store
+.vscode
+Engine/include/rw_config.h
