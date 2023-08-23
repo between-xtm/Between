@@ -59,6 +59,7 @@ file(GLOB PROJECT_HEADERS           Engine/include/*.hpp
                                     )
 file(GLOB PROJECT_SOURCES           Engine/src/*.cpp
                                     Engine/test/*.cpp
+                                    # test/*.cpp
                                     )
 
 add_definitions(-DGLFW_INCLUDE_NONE
@@ -69,9 +70,22 @@ add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_HEADERS}
 target_link_libraries(${PROJECT_NAME} assimp glfw
                       ${GLFW_LIBRARIES} ${GLAD_LIBRARIES}
                       )
+
+# target_link_libraries(test ${PROJECT_NAME} assimp glfw ${GLFW_LIBRARIES} ${GLAD_LIBRARIES})
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
+
+# set_target_properties(test PROPERTIES
+#     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/test)  # 设置test项目的输出路径
 
 add_custom_command(
     TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Engine/resources $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources/)
+
+cmake_minimum_required(VERSION 3.0)
+
+add_subdirectory(test)
+
+# add_library(Engine ${PROJECT_SOURCES} ${PROJECT_HEADERS} ${VENDORS_SOURCES})
+# target_link_libraries(Engine assimp glfw ${GLFW_LIBRARIES} ${GLAD_LIBRARIES})
