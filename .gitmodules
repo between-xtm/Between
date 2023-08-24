@@ -4,9 +4,6 @@
 [submodule "Engine/vendor/assimp"]
 	path = Engine/vendor/assimp
 	url = https://github.com/assimp/assimp.git
-[submodule "Engine/vendor/glad"]
-	path = Engine/vendor/glad
-	url = https://github.com/Dav1dde/glad.git
 [submodule "Engine/vendor/glm"]
 	path = Engine/vendor/glm
 	url = https://github.com/Groovounet/glm.git
