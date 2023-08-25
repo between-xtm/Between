@@ -1,0 +1,62 @@
+#pragma once
+#include <imgui.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#include <iostream>
+
+class Window
+{
+private:
+    GLFWwindow* mWindow = nullptr;
+    static Window* mInstance;
+    Window();
+    Window &operator=(const Window &);
+    bool isMouseEnalbe = true;
+    bool isFirstMouse = true;
+
+    unsigned int mWindowWidth = 1920;
+    unsigned int mWindowHeight = 1080;
+
+    float mDeltaTime = 0.0;
+    float mLastFrame = 0.0;
+
+    static void framebuffer_size_callback(GLFWwindow *window, int width, int height);
+    static void mouse_callback(GLFWwindow *window, double xpos, double ypos);
+    static void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
+
+public:
+    ~Window();
+
+
+    static void DestroyWindow();
+
+    GLFWwindow* getGlfwWindow();
+
+    static void Clear(float r = 0.0f, float g = 0.0f, float b = 0.0f, float a = 1.0f);
+
+    static Window* getWindow();
+
+    void processInput();
+
+    inline bool WindowShouldClose()
+    {
+        return glfwWindowShouldClose(mWindow);
+    }
+
+    inline void SwapBufferAndPollEvents()
+    {
+        glfwSwapBuffers(mWindow);
+        glfwPollEvents();
+    }
+
+    inline void UpdateDeltaTime()
+    {
+        mDeltaTime = glfwGetTime() - mLastFrame;
+        mLastFrame = glfwGetTime();
+    }
+    
+};
