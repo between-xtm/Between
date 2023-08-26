@@ -17,7 +17,7 @@ file(GLOB VENDORS_SOURCES           ../Engine/vendor/glad/src/glad.c
                                     )
 file(GLOB PROJECT_HEADERS           ../Engine/include/*.hpp
                                     ../Engine/include/*.h
-                                    ../Engine/test/*.h
+                                    # ../Engine/test/*.h
                                     )
 file(GLOB PROJECT_SOURCES           ../Engine/src/*.cpp
                                     # ../Engine/test/*.cpp

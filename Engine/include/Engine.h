@@ -42,7 +42,7 @@
 
 // #include "core.h"
 // #include "shader.hpp"
-// #include "camera.hpp"
+#include "Camera.h"
 #include "Window.h"
 // #include "mesh.h"
 // #include "model.h"
