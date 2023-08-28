@@ -90,7 +90,7 @@ CameraInstance::CameraInstance()
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboCameraMatrices, 0, 2 * sizeof(glm::mat4));
-    UpdateUniform();
+    updateUniform();
 }
 
 CameraInstance::~CameraInstance()
@@ -104,7 +104,7 @@ void CameraInstance::DestoryCamera()
     mInstance = nullptr;
 }
 
-CameraInstance* CameraInstance::GetCamera()
+CameraInstance* CameraInstance::getCamera()
 {
     if (mInstance == nullptr)
     {
@@ -128,7 +128,7 @@ void CameraInstance::ProcessMouseScroll(float yoffset)
     mCamera->ProcessMouseScroll(yoffset);
 }
 
-void CameraInstance::UpdateUniform()
+void CameraInstance::updateUniform()
 {
     glm::mat4 projection = glm::perspective(mCamera->getZoom(), static_cast<float>(800) / static_cast<float>(600), 0.1f,
                                             100000.0f);

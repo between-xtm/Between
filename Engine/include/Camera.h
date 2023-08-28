@@ -1,12 +1,6 @@
 #pragma once
 
-#include <glad/glad.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <GLFW/glfw3.h>
-#include <math.h>
-#include <vector>
+#include "Common.h"
 
 enum class CameraMovement
 {
@@ -86,7 +80,7 @@ public:
 
     static void DestoryCamera();
 
-    static CameraInstance* GetCamera();
+    static CameraInstance* getCamera();
 
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
@@ -100,17 +94,17 @@ public:
 
 
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
-    glm::mat4 GetViewMatrix()
+    glm::mat4 getViewMatrix()
     {
         return mCamera->getViewMatrix();
     }
 
-    glm::vec3 GetPosition()
+    glm::vec3 getPosition()
     {
         return mCamera->getPosition();
     }
 
-    void SetMovementSpeed(float movespeed)
+    void setMovementSpeed(float movespeed)
     {
         mCamera->setMovementSpeed(movespeed);
     }
@@ -122,5 +116,5 @@ public:
         return p;
     }
 
-    void UpdateUniform();
+    void updateUniform();
 };

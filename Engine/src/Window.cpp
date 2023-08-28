@@ -85,7 +85,7 @@ void Window::framebuffer_size_callback(GLFWwindow* window, int width, int height
 // MARK: Waiting the camera
 void Window::mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    CameraInstance* camera = CameraInstance::GetCamera();
+    CameraInstance* camera = CameraInstance::getCamera();
     Window* windowInstance = getWindow();
     if (windowInstance->isMouseEnalbe)
     {
@@ -113,14 +113,14 @@ void Window::mouse_callback(GLFWwindow* window, double xpos, double ypos)
 // MARK: Waiting the camera
 void Window::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    CameraInstance* camera = CameraInstance::GetCamera();
+    CameraInstance* camera = CameraInstance::getCamera();
     camera->ProcessMouseScroll(yoffset);
 }
 
 // MARK: Waiting the camera
 void Window::processInput()
 {
-    CameraInstance* camera = CameraInstance::GetCamera();
+    CameraInstance* camera = CameraInstance::getCamera();
     if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(mWindow, true);
 

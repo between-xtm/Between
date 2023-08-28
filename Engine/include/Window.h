@@ -1,12 +1,5 @@
 #pragma once
-#include <imgui.h>
-#include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#include <iostream>
+#include "Common.h"
 
 class Window
 {
@@ -25,15 +18,13 @@ private:
 
     float mDeltaTime = 0.0;
     float mLastFrame = 0.0;
-
-
+    
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
     static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
     static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 public:
     ~Window();
-
 
     static void DestroyWindow();
 
