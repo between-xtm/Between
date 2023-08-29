@@ -1,5 +1,5 @@
 #include "Engine.h"
-void processInput(GLFWwindow *window);
+
  int main()
     {
         Window* window = Window::getWindow();
@@ -28,8 +28,9 @@ void processInput(GLFWwindow *window);
         // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
         // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
         glBindVertexArray(0);
+        std::cout << getFilePath() << std::endl;
 
-        Shader myshader("E:\\Project\\Between\\Engine\\resource\\shaders\\3\\l1\\vertex.vert", "E:\\Project\\Between\\Engine\\resource\\shaders\\3\\l1\\fragment.frag");
+        Shader myshader(GET_SHADER_WITH_CURRENT_PATH("..\\..\\Engine\\resource\\shaders\\3\\l1\\vertex.vert"), "..\\..\\Engine\\resource\\shaders\\3\\l1\\fragment.frag");
         // render loop
         // -----------
         while (!glfwWindowShouldClose(window->getGlfwWindow()))
@@ -37,7 +38,8 @@ void processInput(GLFWwindow *window);
 
             // render
             // ------
-            processInput(window->getGlfwWindow());
+            // processInput(window->getGlfwWindow());
+            window->processInput();
             window->Clear(0,0,0,1);
             glBindVertexArray(VAO);
             myshader.use();
@@ -53,9 +55,3 @@ void processInput(GLFWwindow *window);
         glfwTerminate();
         return 0;
     }
-
-void processInput(GLFWwindow *window)
- {
-     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-         glfwSetWindowShouldClose(window, true);
- }
