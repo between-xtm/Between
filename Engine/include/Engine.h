@@ -12,8 +12,7 @@
 #define __CLEAR_TERMINAL system("cls")
 #endif
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+
 #include "Common.h"
 #include "Utils.h"
 // #include "core.h"
@@ -23,7 +22,7 @@
 // #include "mesh.h"
 // #include "model.h"
 // #include "scene.hpp"
-// #include "drawable.hpp"
+#include "Render.h"
 // #include "gui.h"
 #include "rw_config.h"
 
