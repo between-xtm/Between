@@ -34,6 +34,16 @@ public:
 
     static Window* getWindow();
 
+    float getWindowWidth()
+    {
+        return mWindowWidth;
+    }
+
+    inline float getWindowHeight()
+    {
+        return mWindowHeight;
+    }
+
     void processInput();
 
     bool WindowShouldClose()

@@ -25,5 +25,6 @@
 #include "Render.h"
 // #include "gui.h"
 #include "rw_config.h"
+#include "FramebufferObject.h"
 
 #endif

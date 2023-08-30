@@ -128,10 +128,17 @@ void CameraInstance::ProcessMouseScroll(float yoffset)
     mCamera->ProcessMouseScroll(yoffset);
 }
 
-void CameraInstance::updateUniform()
+void CameraInstance::updateUniform(bool isOrtho)
 {
-    glm::mat4 projection = glm::perspective(mCamera->getZoom(), static_cast<float>(800) / static_cast<float>(600), 0.1f,
-                                            100000.0f);
+    glm::mat4 projection;
+    if(isOrtho)
+    {
+        projection = glm::ortho(0,800,0,600,-1,1);
+    } else
+    {
+        projection = glm::perspective(mCamera->getZoom(), static_cast<float>(800) / static_cast<float>(600), 0.1f,
+                                                100000.0f);
+    }
     glBindBuffer(GL_UNIFORM_BUFFER, uboCameraMatrices);
     glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
     glm::mat4 view = mCamera->getViewMatrix();

@@ -4,7 +4,7 @@
 
 void Render::Draw()
 {
-    UpdateCamera();
+    // UpdateCamera();
     shader->use();
     glBindVertexArray(VAO);
     if (drawlayout & (TextureDrawlayout))

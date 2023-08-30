@@ -116,5 +116,5 @@ public:
         return p;
     }
 
-    void updateUniform();
+    void updateUniform(bool isOrtho = false);
 };
