@@ -20,7 +20,7 @@ Window::Window()
     glfwWindowHint(GLFW_SAMPLES, 4);
     // glfw window creation
     // --------------------
-    mWindow = glfwCreateWindow(mWindowWidth, mWindowHeight, "LearnOpenGL", nullptr, nullptr);
+    mWindow = glfwCreateWindow(mWindowWidth, mWindowHeight, "LUTGenerator", nullptr, nullptr);
     if (mWindow == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;

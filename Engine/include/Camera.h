@@ -21,7 +21,10 @@ public:
     void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
     void ProcessMouseScroll(float yoffset);
 
-    glm::mat4 getViewMatrix() { return glm::lookAt(mPosition, mPosition + mFront, mUp); }
+    glm::mat4 getViewMatrix()
+    {
+        return glm::lookAt(mPosition, mPosition + mFront, mUp);
+    }
 
     void setPosition(glm::vec3 Position) { mPosition = Position; }
     glm::vec3 getPosition() { return mPosition; }
@@ -116,5 +119,10 @@ public:
         return p;
     }
 
+    glm::mat4 getOrtho()
+    {
+        glm::mat4 p = glm::ortho(0.0f,256.0f,0.0f,16.0f,-1.0f,1.0f);
+        return p;
+    }
     void updateUniform(bool isOrtho = false);
 };

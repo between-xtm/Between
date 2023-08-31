@@ -1,5 +1,5 @@
 #include "Render.h"
-#define STB_IMAGE_IMPLEMENTATION
+// #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 void Render::Draw()
@@ -279,7 +279,8 @@ void Render::UpdateCamera()
     {
         CameraInstance* camera = CameraInstance::getCamera();
         glm::mat4 view = camera->getViewMatrix();
-        glm::mat4 projection = camera->getPerspective();
+        // glm::mat4 projection = camera->getPerspective();
+        glm::mat4 projection = camera->getOrtho();
         shader->use();
         if (drawlayout & (CamerPositionInside))
         {
@@ -328,3 +329,13 @@ unsigned int Render::loadTexture(const char* path)
 
     return textureID;
 }
+
+void Render::DeleteAllTextures()
+{
+    for (int i = 0; i < TextureId.size(); i++)
+    {
+        glDeleteTextures(1, &TextureId[i]);
+    }
+    TextureId.swap(std::vector<unsigned int>());
+}
+

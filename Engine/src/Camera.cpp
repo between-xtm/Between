@@ -5,24 +5,32 @@
 
 Camera::Camera()
 {
-    updateCameraVectors();
+    Camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f);
 }
 
 Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
+    : mPosition(position)
+    , mWorldUp(up)
+    , mFront(glm::vec3(0.0f, 0.0f, -1.0f))
 {
-    mPosition = position;
-    mUp = up;
     mYaw = yaw;
     mPitch = pitch;
+    mMovementSpeed = 1.8f;
+    mMouseSensitivity = 0.1f;
+    mZoom = 45.0f;
     updateCameraVectors();
 }
 
 Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch)
 {
     mPosition = glm::vec3(posX, posY, posZ);
-    mUp = glm::vec3(upX, upY, upZ);
+    mWorldUp = glm::vec3(upX, upY, upZ);
     mYaw = yaw;
     mPitch = pitch;
+    mFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    mMovementSpeed = 1.8f;
+    mMouseSensitivity = 0.1f;
+    mZoom = 45.0f;
     updateCameraVectors();
 }
 
@@ -80,7 +88,7 @@ CameraInstance* CameraInstance::mInstance = nullptr;
 
 CameraInstance::CameraInstance()
 {
-    mCamera = new Camera();
+    mCamera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f);
 
     // 创建共享uniform布局块的缓冲对象
     glGenBuffers(1, &uboCameraMatrices);
@@ -90,7 +98,7 @@ CameraInstance::CameraInstance()
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboCameraMatrices, 0, 2 * sizeof(glm::mat4));
-    updateUniform();
+    updateUniform(true);
 }
 
 CameraInstance::~CameraInstance()
@@ -120,7 +128,7 @@ void CameraInstance::ProcessKeyboard(CameraMovement direction, float deltaTime)
 
 void CameraInstance::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)
 {
-    mCamera->ProcessMouseMovement(xoffset, yoffset);
+    // mCamera->ProcessMouseMovement(xoffset, yoffset);
 }
 
 void CameraInstance::ProcessMouseScroll(float yoffset)
@@ -133,7 +141,7 @@ void CameraInstance::updateUniform(bool isOrtho)
     glm::mat4 projection;
     if(isOrtho)
     {
-        projection = glm::ortho(0,800,0,600,-1,1);
+        projection = glm::ortho(0.0f,256.0f,0.0f,16.0f,-1.0f,1.0f);
     } else
     {
         projection = glm::perspective(mCamera->getZoom(), static_cast<float>(800) / static_cast<float>(600), 0.1f,

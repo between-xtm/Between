@@ -48,7 +48,7 @@ public:
 
     Render* SetVertexNum(int _vn);
     Render* SetVertexLayout(VertexLayout _vt);
-
+    void DeleteAllTextures();
 protected:
     Shader* shader = nullptr;
     DrawLayout drawlayout = (None);

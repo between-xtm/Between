@@ -3,7 +3,8 @@
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <string>
-
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 #include <Windows.h>
 #include <commdlg.h>
 
@@ -12,6 +13,44 @@ std::string originImgae("");
 std::string lutImgae("");
 bool originChanged = false;
 bool lutChanged = false;
+GLuint texture1, texture2;
+
+void loadTexture(std::string pth, bool isOrigin)
+{
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    stbi_set_flip_vertically_on_load(true);
+    if(isOrigin)
+    {
+        glDeleteTextures(1, &texture1);
+        glGenTextures(1, &texture1);
+    } else
+    {
+        glDeleteTextures(1, &texture2);
+        glGenTextures(1, &texture2);
+    }
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    // 为当前绑定的纹理对象设置环绕、过滤方式
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // 加载纹理图片
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load(pth.c_str(), &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture1" << std::endl;
+    }
+    stbi_image_free(data);
+
+}
 
 std::string openFileSelectionDialog()
 {
@@ -70,23 +109,59 @@ void renderUI()
     ImGui_ImplOpenGL3_Init();
 
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f, // left
-        0.5f, -0.5f, 0.0f,  // right
-        0.0f, 0.5f, 0.0f    // top
+        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, // left
+        1.0f, -1.0f, 0.0f, 1.0f, 0.0f, // right
+        -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,    // top
+        1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+        1.0f, -1.0f, 0.0f, 1.0f, 0.0f
     };
     
     Render* render = new Render();
-    render->SetVertex(vertices, VertexLayout::Vertexlayout, sizeof(vertices));
+    render->SetVertex(vertices, VertexLayout::VertexTexcoordlayout, sizeof(vertices));
     std::cout << getFilePath() << std::endl;
-    render->SetShader("..\\..\\Engine\\resource\\shaders\\3\\l1\\vertex.vert", "..\\..\\Engine\\resource\\shaders\\3\\l1\\fragment.frag");
-
+    render->SetShader("E:/Project/Between/test/vertex.vert", "E:/Project/Between/test/fragment.frag");
+    loadTexture("E:/Project/Between/test/origin.png", true);
+    loadTexture("E:/Project/Between/test/lut.png", false);
+    render->GetShader()->use();
+    render->GetShader()->setInt("texture1", 0);
+    render->GetShader()->setInt("texture2", 1);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture2);
     glfwSetInputMode(window->getGlfwWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     
     while (!glfwWindowShouldClose(window->getGlfwWindow()))
     {
-
+        glViewport(0,0,256,16);
         window->processInput();
-        window->Clear(0,0,0,1);
+        window->Clear(0,1,0,1);
+        auto camera = CameraInstance::getCamera();
+        camera->updateUniform(true);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture2);
+        if(originChanged)
+        {
+            // render->DeleteAllTextures();
+            loadTexture(originImgae, true);
+            render->GetShader()->use();
+            render->GetShader()->setInt("texture1", texture1);
+            
+            originChanged = false;
+        }
+        if(lutChanged)
+        {
+            // render->DeleteAllTextures();
+            loadTexture(lutImgae, false);
+            render->GetShader()->use();
+            render->GetShader()->setInt("texture2", texture2);
+            lutChanged = false;
+        }
+        render->Draw();
 
         // 渲染ImGui界面
         ImGui_ImplOpenGL3_NewFrame();
@@ -101,12 +176,6 @@ void renderUI()
         // 渲染ImGui界面到OpenGL上下文
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        if(originChanged || lutChanged)
-        {
-            
-        }
-        render->Draw();
         window->SwapBufferAndPollEvents();
     }
 
@@ -114,48 +183,6 @@ void renderUI()
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-    
-    // if(ImGui::Button("select Image"))
-    // {
-    //     a = openFileSelectionDialog();
-    // }
-    // ImGui::Render();
-    std::cout<<a<<std::endl;
 
-
-    
-        //
-        // Window* window = Window::getWindow();
-        //
-        // float vertices[] = {
-        //     -0.5f, -0.5f, 0.0f, // left
-        //     0.5f, -0.5f, 0.0f,  // right
-        //     0.0f, 0.5f, 0.0f    // top
-        // };
-        //
-        // Render* render = new Render();
-        // render->SetVertex(vertices, VertexLayout::Vertexlayout, sizeof(vertices));
-        // std::cout << getFilePath() << std::endl;
-        // render->SetShader("..\\..\\Engine\\resource\\shaders\\3\\l1\\vertex.vert", "..\\..\\Engine\\resource\\shaders\\3\\l1\\fragment.frag");
-        // // render loop
-        // // -----------
-        // while (!glfwWindowShouldClose(window->getGlfwWindow()))
-        // {
-        //
-        //
-        //     
-        //
-        //     // render
-        //     // ------
-        //     window->processInput();
-        //     window->Clear(0,0,0,1);
-        //     render->Draw();
-        //     window->SwapBufferAndPollEvents();
-        // }
-        //
-        //
-        // // glfw: terminate, clearing all previously allocated GLFW resources.
-        // // ------------------------------------------------------------------
-        // glfwTerminate();
         return 0;
     }
