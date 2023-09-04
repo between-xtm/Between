@@ -19,18 +19,26 @@ void loadTexture(std::string pth, bool isOrigin)
 {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    stbi_set_flip_vertically_on_load(true);
     if(isOrigin)
     {
-        glDeleteTextures(1, &texture1);
-        glGenTextures(1, &texture1);
+        stbi_set_flip_vertically_on_load(true);
     } else
     {
-        glDeleteTextures(1, &texture2);
-        glGenTextures(1, &texture2);
+        stbi_set_flip_vertically_on_load(false);
     }
-    glBindTexture(GL_TEXTURE_2D, texture1);
+    if(isOrigin)
+    {
+        // glDeleteTextures(1, &texture1);
+        glGenTextures(1, &texture1);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
+    } else
+    {
+        // glDeleteTextures(1, &texture2);
+        glGenTextures(1, &texture2);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture2);
+    }
     // 为当前绑定的纹理对象设置环绕、过滤方式
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -41,7 +49,13 @@ void loadTexture(std::string pth, bool isOrigin)
     unsigned char *data = stbi_load(pth.c_str(), &width, &height, &nrChannels, 0);
     if (data)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        if(nrChannels == 3)
+        {
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        } else if (nrChannels == 4)
+        {
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        }
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -121,22 +135,22 @@ void renderUI()
     render->SetVertex(vertices, VertexLayout::VertexTexcoordlayout, sizeof(vertices));
     std::cout << getFilePath() << std::endl;
     render->SetShader("E:/Project/Between/test/vertex.vert", "E:/Project/Between/test/fragment.frag");
-    loadTexture("E:/Project/Between/test/origin.png", true);
-    loadTexture("E:/Project/Between/test/lut.png", false);
-    render->GetShader()->use();
-    render->GetShader()->setInt("texture1", 0);
-    render->GetShader()->setInt("texture2", 1);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture2);
+    // loadTexture("E:/Project/Between/test/origin.png", true);
+    // loadTexture("E:/Project/Between/test/lut.png", false);
+    // render->GetShader()->use();
+    // render->GetShader()->setInt("texture1", 0);
+    // render->GetShader()->setInt("texture2", 1);
+    // glActiveTexture(GL_TEXTURE0);
+    // glBindTexture(GL_TEXTURE_2D, texture1);
+    // glActiveTexture(GL_TEXTURE1);
+    // glBindTexture(GL_TEXTURE_2D, texture2);
     glfwSetInputMode(window->getGlfwWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     
     while (!glfwWindowShouldClose(window->getGlfwWindow()))
     {
-        glViewport(0,0,256,16);
+        // glViewport(0,0,256,16);
         window->processInput();
-        window->Clear(0,1,0,1);
+        window->Clear(0,0,0,1);
         auto camera = CameraInstance::getCamera();
         camera->updateUniform(true);
 
@@ -149,7 +163,7 @@ void renderUI()
             // render->DeleteAllTextures();
             loadTexture(originImgae, true);
             render->GetShader()->use();
-            render->GetShader()->setInt("texture1", texture1);
+            render->GetShader()->setInt("texture1", 0);
             
             originChanged = false;
         }
@@ -158,7 +172,7 @@ void renderUI()
             // render->DeleteAllTextures();
             loadTexture(lutImgae, false);
             render->GetShader()->use();
-            render->GetShader()->setInt("texture2", texture2);
+            render->GetShader()->setInt("texture2", 1);
             lutChanged = false;
         }
         render->Draw();

@@ -32,4 +32,5 @@ void main() {
      
      vec4 newColor = mix(newColor1, newColor2, fract(blueColor));
      FragColor = mix(textureColor, vec4(newColor.rgb, textureColor.w), 1.0);
+//FragColor = textureColor;
 }
