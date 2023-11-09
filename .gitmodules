@@ -13,3 +13,9 @@
 [submodule "Engine/vendor/stb"]
 	path = Engine/vendor/stb
 	url = https://github.com/nothings/stb.git
+[submodule "Engine/vendor/libpng"]
+	path = Engine/vendor/libpng
+	url = https://github.com/glennrp/libpng.git
+[submodule "Engine/vendor/zlib"]
+	path = Engine/vendor/zlib
+	url = https://github.com/madler/zlib.git
