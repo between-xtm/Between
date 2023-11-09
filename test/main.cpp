@@ -7,13 +7,15 @@
 #include <stb_image.h>
 #include <Windows.h>
 #include <commdlg.h>
-
+#include <gdiplus.h>
+// #pragma comment(lib, "gdiplus.lib")
 
 std::string originImgae("");
 std::string lutImgae("");
 bool originChanged = false;
 bool lutChanged = false;
 GLuint texture1, texture2;
+bool snap = false;
 
 void loadTexture(std::string pth, bool isOrigin)
 {
@@ -107,6 +109,10 @@ void renderUI()
         lutImgae = openFileSelectionDialog();
         lutChanged = true;
     }
+    if (ImGui::Button("button3"))
+    {
+        snap = true;
+    }
 
     ImGui::End();
 }
@@ -145,6 +151,8 @@ void renderUI()
     // glActiveTexture(GL_TEXTURE1);
     // glBindTexture(GL_TEXTURE_2D, texture2);
     glfwSetInputMode(window->getGlfwWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+
     
     while (!glfwWindowShouldClose(window->getGlfwWindow()))
     {
@@ -176,7 +184,7 @@ void renderUI()
             lutChanged = false;
         }
         render->Draw();
-
+     
         // 渲染ImGui界面
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -189,6 +197,25 @@ void renderUI()
         
         // 渲染ImGui界面到OpenGL上下文
         ImGui::Render();
+        if(snap == true)
+        {
+            
+            snap = false;
+            unsigned char* pixels = new unsigned char[800 * 600 * 4];
+
+            // 使用glReadPixels函数读取纹理数据
+            glReadPixels(0, 0, 800, 600, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+
+            // 将读取到的纹理数据保存为PNG图片
+            // if (stbi_write_png("saved_texture.png", width, height, channels, pixels, width * channels) == 0) {
+            //     // 处理保存纹理失败的情况
+            // } else {
+            //     // 处理保存纹理成功的情况
+            // }
+            printf("%c\n", pixels[1]);
+            // 记得释放内存
+            delete[] pixels;
+        }
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         window->SwapBufferAndPollEvents();
     }
