@@ -24,3 +24,19 @@
 #include <assimp/postprocess.h>
 
 #define BIT(x) (1 << x)
+
+struct Vertex
+{
+    glm::vec3 Position = glm::vec3(-1,-1,-1);
+    glm::vec3 Normal = glm::vec3(-1,-1,-1);
+    glm::vec2 TexCoords= glm::vec2(-1,-1);
+    glm::vec3 Tangent = glm::vec3(-1,-1,-1);
+    glm::vec3 Bitangent = glm::vec3(-1,-1,-1);
+};
+
+struct Texture
+{
+    unsigned int id;
+    std::string type;
+    std::string path;
+};
